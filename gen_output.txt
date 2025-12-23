@@ -1,0 +1,19 @@
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma\schema.prisma
+Error: Prisma schema validation - (get-config wasm)
+Error code: P1012
+error: Argument "url" is missing in data source block "db".
+  -->  prisma\schema.prisma:11
+   | 
+10 | 
+11 | datasource db {
+12 |   provider = "mongodb"
+13 | }
+   | 
+
+Validation Error Count: 1
+[Context: getConfig]
+
+Prisma CLI Version : 6.19.1

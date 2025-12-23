@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["prismaConfig"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url = env("DATABASE_URL")
+}
+
+model Client {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  phoneNumber String @unique
+  points Int @default(0)
+  transactions Transaction[]
+  exchanges Exchange[]
+}
+
+model Transaction {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  amount Int
+  total Float
+  createdAt DateTime @default(now())
+  clientId String @db.ObjectId
+  productId String @db.ObjectId
+  client Client @relation(fields: [clientId], references: [id])
+  product product @relation(fields: [productId], references: [id])
+}
+
+model product {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  price Float
+  stock Int
+  transactions Transaction[]
+  exchanges Exchange[] 
+}
+
+model Exchange {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  amount Float
+  createdAt DateTime @default(now())
+  clientId String @db.ObjectId
+  productId String @db.ObjectId
+  client Client @relation(fields: [clientId], references: [id])
+  product product @relation(fields: [productId], references: [id])
+}
