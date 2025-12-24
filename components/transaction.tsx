@@ -8,6 +8,7 @@ import type { ClientToTable } from "@/lib/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Store } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -42,6 +43,7 @@ export default function Shop({
   clients: ClientToTable[];
   products: product[];
 }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [clientSelected, setClientSelected] = useState<ClientToTable | null>(
     null
   );
@@ -61,7 +63,15 @@ export default function Shop({
   };
 
   return (
-    <Sheet>
+    <Sheet
+      open={isOpen}
+      onOpenChange={() => {
+        setIsOpen(!isOpen);
+        form.reset();
+        setClientSelected(null);
+        setProductSelected(null);
+      }}
+    >
       <SheetTrigger className="border border-slate-300 rounded-full p-2 shadow-md hover:bg-slate-100 hover:cursor-pointer transition-colors ease-in">
         <Store size={24} strokeWidth={1.5} className="text-slate-800" />
       </SheetTrigger>
@@ -82,8 +92,11 @@ export default function Shop({
                 <FormItem>
                   <FormLabel>Cliente</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      const client = clients.find((c) => c.id === value);
+                      if (client) setClientSelected(client);
+                    }}
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
@@ -92,11 +105,7 @@ export default function Shop({
                     </FormControl>
                     <SelectContent>
                       {clients.map((client) => (
-                        <SelectItem
-                          key={client.id}
-                          value={client.id}
-                          onClick={() => setClientSelected(client)}
-                        >
+                        <SelectItem key={client.id} value={client.id}>
                           {client.name}
                         </SelectItem>
                       ))}
@@ -116,7 +125,11 @@ export default function Shop({
                 <FormItem>
                   <FormLabel>Producto</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      const product = products.find((p) => p.id === value);
+                      if (product) setProductSelected(product);
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -126,11 +139,7 @@ export default function Shop({
                     </FormControl>
                     <SelectContent>
                       {products.map((product) => (
-                        <SelectItem
-                          key={product.id}
-                          value={product.id}
-                          onClick={() => setProductSelected(product)}
-                        >
+                        <SelectItem key={product.id} value={product.id}>
                           {product.name}
                         </SelectItem>
                       ))}
@@ -157,14 +166,17 @@ export default function Shop({
                 </FormItem>
               )}
             />
-            {clientSelected && <p>Puntos actuales: {clientSelected?.points}</p>}
-            {/* <p>
-              Se le agregaran{" "}
-              {productSelected
-                ? productSelected?.price * form.watch("amount")
-                : 0}{" "}
-              puntos al cliente.
-            </p> */}
+            <Separator className="my-2 w-full" />
+            {clientSelected && (
+              <p className="text-sm text-muted-foreground">
+                Puntos actuales: {clientSelected?.points}
+              </p>
+            )}
+            {productSelected && (
+              <p className="text-sm text-muted-foreground">
+                Se le agregaran {productSelected?.price * 5} puntos al cliente.
+              </p>
+            )}
             <Button type="submit" variant={"default"} className="w-full">
               Comprar
             </Button>
