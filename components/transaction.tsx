@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { transactionSchema } from "@/lib/schemas";
+import { createTransaction } from "@/app/actions";
 import type { product } from "@prisma/client";
 import type { TransactionSchemaType } from "@/lib/schemas";
 import type { ClientToTable } from "@/lib/types";
@@ -9,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Store } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -53,13 +55,23 @@ export default function Shop({
     resolver: zodResolver(transactionSchema) as any,
     defaultValues: {
       client: "",
+      product: "",
       amount: 0,
-      total: 0,
     },
   });
 
-  const onSubmit = (data: TransactionSchemaType) => {
-    console.log(data);
+  const onSubmit = async (data: TransactionSchemaType) => {
+    const transaction = {
+      ...data,
+      total: data.amount * productSelected!.price,
+    };
+    const res = await createTransaction(transaction);
+    if (!res.success) {
+      toast.error(res?.error || "Error al agregar cliente.");
+      return;
+    }
+    toast.success("Cliente agregado exitosamente.");
+    setIsOpen(false);
   };
 
   return (
@@ -157,7 +169,7 @@ export default function Shop({
                 <FormItem>
                   <FormLabel>Cantidad</FormLabel>
                   <FormControl>
-                    <Input placeholder="Cantidad" {...field} />
+                    <Input placeholder="Cantidad" type="number" {...field} />
                   </FormControl>
                   <FormDescription>
                     Cantidad de productos vendidos.
@@ -174,7 +186,9 @@ export default function Shop({
             )}
             {productSelected && (
               <p className="text-sm text-muted-foreground">
-                Se le agregaran {productSelected?.price * 5} puntos al cliente.
+                Se le agregaran{" "}
+                {productSelected?.price * 5 * form.watch("amount")} puntos al
+                cliente.
               </p>
             )}
             <Button type="submit" variant={"default"} className="w-full">

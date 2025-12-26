@@ -51,7 +51,13 @@ export default function NewClient() {
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={() => {
+        setIsOpen(!isOpen);
+        form.reset();
+      }}
+    >
       <SheetTrigger className="w-full flex justify-between items-center pl-2 text-sm hover:cursor-pointer group">
         Agregar cliente
         <Dot

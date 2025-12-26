@@ -18,10 +18,10 @@ export const productSchema = z.object({
   name: z.string().min(2, {
     message: "El nombre debe ser mas largo.",
   }),
-  price: z.coerce.number().min(0, {
+  price: z.coerce.number().min(1, {
     message: "El precio debe ser mayor a 0.",
   }),
-  stock: z.coerce.number().min(0, {
+  stock: z.coerce.number().min(1, {
     message: "El stock debe ser mayor a 0.",
   }),
   key: z.string().min(5, {
@@ -38,11 +38,11 @@ export const transactionSchema = z.object({
   product: z.string().min(2, {
     message: "El producto es obligatorio.",
   }),
-  amount: z.coerce.number().min(0, {
+  amount: z.coerce.number().min(1, {
     message: "El monto debe ser mayor a 0.",
   }),
-  total: z.coerce.number().min(0, {
-    message: "El total debe ser mayor a 0.",
+  key: z.string().min(5, {
+    message: "La llave no es valida.",
   }),
 });
 

@@ -35,8 +35,8 @@ export default async function Home() {
   return (
     <div className="h-screen relative overflow-hidden">
       <main>
-        <h1 className="text-2xl text-slate-800 text-center my-5">
-          📌 Big Pig{" "}
+        <h1 className="text-4xl font-semibold text-slate-800 my-5 px-20">
+          🧌 Tkte Mng
         </h1>
         <section className="flex justify-between px-5">
           <div className="w-1/2">
