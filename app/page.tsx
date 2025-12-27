@@ -48,9 +48,12 @@ export default async function Home() {
     status: "Activo",
   }));
 
-  const profit = exchanges.reduce((acc, exchange) => acc + exchange.revenue, 0);
+  const profit = exchanges.reduce(
+    (acc: number, exchange) => acc + (exchange.revenue ?? 0),
+    0
+  );
   const withdrawal = withdrawals.reduce(
-    (acc, withdrawal) => acc + withdrawal.amount,
+    (acc: number, withdrawal) => acc + (withdrawal.amount ?? 0),
     0
   );
 

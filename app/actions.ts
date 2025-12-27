@@ -206,7 +206,7 @@ export async function createWithdrawal({
   try {
     const exchanges = await prisma.exchange.findMany();
     const totalProfit = exchanges.reduce(
-      (acc, exchange) => acc + (exchange.revenue ?? 0),
+      (acc: number, exchange) => acc + (exchange.revenue ?? 0),
       0
     );
 
