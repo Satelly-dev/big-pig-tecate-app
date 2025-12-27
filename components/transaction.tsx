@@ -57,6 +57,7 @@ export default function Shop({
       client: "",
       product: "",
       amount: 0,
+      key: "",
     },
   });
 
@@ -64,13 +65,14 @@ export default function Shop({
     const transaction = {
       ...data,
       total: data.amount * productSelected!.price,
+      stock: data.amount * productSelected!.stock,
     };
     const res = await createTransaction(transaction);
     if (!res.success) {
       toast.error(res?.error || "Error al agregar cliente.");
       return;
     }
-    toast.success("Cliente agregado exitosamente.");
+    toast.success("Transaccion agregada.");
     setIsOpen(false);
   };
 
@@ -90,7 +92,7 @@ export default function Shop({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Comprar</SheetTitle>
-          <SheetDescription>Agregar puntos a un cliente.</SheetDescription>
+          <SheetDescription>Realizar una transaccion.</SheetDescription>
         </SheetHeader>
         <Form {...form}>
           <form
@@ -174,6 +176,20 @@ export default function Shop({
                   <FormDescription>
                     Cantidad de productos vendidos.
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="key"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Clave</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Clave" {...field} />
+                  </FormControl>
+                  <FormDescription>Clave de seguridad.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

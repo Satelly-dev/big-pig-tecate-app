@@ -10,8 +10,9 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 import type { ClientToTable } from "@/lib/types";
-import { Archive, X } from "lucide-react";
-import { Client } from "@prisma/client";
+import { X } from "lucide-react";
+import { Client, product } from "@prisma/client";
+import Exchange from "./exchange";
 
 const columnHelper = createColumnHelper<ClientToTable>();
 
@@ -39,7 +40,13 @@ const columns = [
   }),
 ];
 
-export default function Table({ clients }: { clients: Client[] }) {
+export default function TableClients({
+  clients,
+  products,
+}: {
+  clients: Client[];
+  products: product[];
+}) {
   const tableInstance = useReactTable({
     columns,
     data: clients,
@@ -92,35 +99,30 @@ export default function Table({ clients }: { clients: Client[] }) {
                 type="button"
                 title={`Eliminar ${row.getValue("id")}`}
                 className="text-red-500 hover:text-red-700 hover:cursor-pointer"
-                onClick={() => {
+                onClick={async () => {
                   const key = prompt(
                     `¿Estas seguro de eliminar la cuenta de ${row.getValue(
                       "name"
                     )}? ingrese la llave para confirmar.`
                   );
                   if (key) {
-                    deleteClient(row.getValue("id"), key);
+                    const res = await deleteClient(row.getValue("id"), key);
+                    if (!res.success) {
+                      toast.error(res.error);
+                    } else {
+                      toast.success("Cliente eliminado");
+                    }
                   }
                 }}
               >
                 <X size={20} />
               </button>
-              <button
-                type="button"
-                title={`Almacenar dinero`}
-                className="text-slate-500 hover:text-slate-700 hover:cursor-pointer"
-                onClick={() =>
-                  confirm(
-                    `¿Estas seguro de canjear los puntos de la cuenta de ${row.getValue(
-                      "name"
-                    )}?`
-                  )
-                    ? console.log("Canjear", row.getValue("id"))
-                    : null
-                }
-              >
-                <Archive strokeWidth={1.5} size={20} />
-              </button>
+              <Exchange
+                id={row.getValue("id")}
+                points={row.getValue("points")}
+                accountName={row.getValue("name")}
+                products={products}
+              />
             </td>
           </tr>
         ))}

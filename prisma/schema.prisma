@@ -27,11 +27,12 @@ model Transaction {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
   amount Int
   total Float
+  stock Int
   createdAt DateTime @default(now())
   clientId String @db.ObjectId
-  productId String @db.ObjectId
-  client Client @relation(fields: [clientId], references: [id])
-  product product @relation(fields: [productId], references: [id])
+  productId String? @db.ObjectId
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  product product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 }
 
 model product {
@@ -45,10 +46,17 @@ model product {
 
 model Exchange {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  amount Float
+  amount Int
+  revenue Float
   createdAt DateTime @default(now())
-  clientId String @db.ObjectId
-  productId String @db.ObjectId
-  client Client @relation(fields: [clientId], references: [id])
-  product product @relation(fields: [productId], references: [id])
+  clientId String? @db.ObjectId
+  productId String? @db.ObjectId
+  client Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  product product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+model Withdrawal {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  amount Int
+  createdAt DateTime @default(now())
 }

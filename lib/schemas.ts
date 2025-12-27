@@ -47,3 +47,17 @@ export const transactionSchema = z.object({
 });
 
 export type TransactionSchemaType = z.infer<typeof transactionSchema>;
+
+export const exchangeSchema = z.object({
+  product: z.string().min(2, {
+    message: "El producto es obligatorio.",
+  }),
+  amount: z.coerce.number().min(1, {
+    message: "El monto debe ser mayor a 0.",
+  }),
+  key: z.string().min(5, {
+    message: "La llave no es valida.",
+  }),
+});
+
+export type ExchangeSchemaType = z.infer<typeof exchangeSchema>;
